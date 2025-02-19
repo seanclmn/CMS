@@ -13,24 +13,46 @@ defmodule CmsLiveviewWeb.QA do
     {:noreply, socket}
   end
 
+  def handle_event("edit", %{"id" => id}, socket) do
+    Cms.update_faq(id)
+    {:noreply, socket}
+  end
+
   def render(assigns) do
     ~H"""
     <div class="w-full p-4">
       <%= for faq <- assigns.faqs do %>
-        <div class="flex flex-row  justify-between items-end w-full my-2">
+        <div class="flex flex-row  justify-between items-end w-full py-2 my-2 border-solid border-b-2 border-gray-200">
           <div class="flex flex-col my-4">
             <p class="font-bold my-2"><span>Question:</span> {faq.question}</p>
             <p class="text-wrap"><span>Answer:</span> {faq.answer}</p>
           </div>
-
-          <.button class="bg-sky-500 text-black" phx-click="delete" phx-value-id={faq.id}>
-            Delete
-          </.button>
+          <div class="flex items-start">
+            <.live_component
+              module={CmsLiveviewWeb.Components.Modal}
+              id={"modal-component-edit-#{faq.id}"}
+              question={faq.question}
+              answer={faq.answer}
+              action="edit"
+              title="Edit"
+            />
+            <.button
+              class="bg-sky-500 text-black"
+              phx-click="delete"
+              phx-value-id={faq.id}
+            >
+              Delete
+            </.button>
+          </div>
         </div>
       <% end %>
       <.live_component
         module={CmsLiveviewWeb.Components.Modal}
-        id="modal-component"
+        id="modal-component-save"
+        title="Add new FAQ"
+        action="save"
+        question=""
+        answer=""
       />
     </div>
     """
