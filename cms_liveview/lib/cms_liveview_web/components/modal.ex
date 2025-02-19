@@ -4,9 +4,12 @@ defmodule CmsLiveviewWeb.Components.Modal do
   import CmsLiveviewWeb.CoreComponents
 
   def update(assigns, socket) do
-    IO.inspect("hello")
     form = to_form(Faq.changeset(%Faq{}, %{}))
-    {:ok, assign(socket, assigns |> Map.put(:form, form))}
+
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> assign(:form, form)}
   end
 
   def handle_event("save", faq_params, socket) do
@@ -15,6 +18,7 @@ defmodule CmsLiveviewWeb.Components.Modal do
     if changeset.valid? do
       case CmsLiveview.Cms.create_faq(faq_params) do
         {:ok, faq} ->
+          hide_modal("modal-component")
           {:noreply, socket}
 
         {:error, changeset} ->
@@ -26,16 +30,19 @@ defmodule CmsLiveviewWeb.Components.Modal do
   def render(assigns) do
     ~H"""
     <div>
-    <button>
-    open  modal
-    </button>
-    <.modal id="modal-component" show={true}>
-      <.simple_form for={@form} phx-submit="save" phx-target={@myself}>
-        <.input type="text" name="question" field={@form[:question]} />
-        <.input type="text" name="answer" field={@form[:answer]} />
-        <.button>Submit</.button>
-      </.simple_form>
-    </.modal>
+      <.button
+        phx-click={show_modal("modal-component")}
+        phx-target={@myself}
+        class="my-2">
+        Add new FAQ
+      </.button>
+      <.modal id="modal-component">
+        <.simple_form for={@form} phx-submit="save" phx-target={@myself}>
+          <.input type="text" name="question" label="New Question" field={@form[:question]} />
+          <.input type="textarea" name="answer" label="New Answer" field={@form[:answer]} />
+          <.button>Submit</.button>
+        </.simple_form>
+      </.modal>
     </div>
     """
   end

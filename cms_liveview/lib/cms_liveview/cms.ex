@@ -85,7 +85,9 @@ defmodule CmsLiveview.Cms do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_faq(%Faq{} = faq) do
+  def delete_faq(id) do
+    faq = get_faq!(id)
+
     Repo.delete(faq)
   end
 
