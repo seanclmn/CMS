@@ -15,7 +15,7 @@ defmodule CmsLiveviewWeb.Components.Modal do
   def handle_event("save", faq_params, socket) do
     case CmsLiveview.Cms.create_faq(faq_params) do
       {:ok, faq} ->
-        {:noreply, socket}
+        {:noreply, push_navigate(socket, to: "/qa")}
 
       {:error, changeset} ->
         {:noreply, socket}
@@ -23,9 +23,12 @@ defmodule CmsLiveviewWeb.Components.Modal do
   end
 
   def handle_event("edit", faq_params, socket) do
-    case CmsLiveview.Cms.update_faq(faq_params) do
+    faq = CmsLiveview.Cms.get_faq!(socket.assigns.question_id)
+    IO.inspect(socket.assigns.id)
+
+    case CmsLiveview.Cms.update_faq(faq, faq_params) do
       {:ok, faq} ->
-        {:noreply, socket}
+        {:noreply, push_navigate(socket, to: "/qa")}
 
       {:error, changeset} ->
         {:noreply, socket}
@@ -45,7 +48,7 @@ defmodule CmsLiveviewWeb.Components.Modal do
         <.simple_form for={@form} phx-submit={@action} phx-target={@myself}>
           <.input type="text" name="question" label="New Question" field={@form[:question]} value={@question} />
           <.input type="textarea" name="answer" label="New Answer" field={@form[:answer]} value={@answer} />
-          <.button>{@title}</.button>
+          <.button phx-click={hide_modal(@id)}>{@title}</.button>
         </.simple_form>
       </.modal>
     </div>

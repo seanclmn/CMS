@@ -36,6 +36,7 @@ defmodule CmsLiveviewWeb.QA do
             <.live_component
               module={CmsLiveviewWeb.Components.Modal}
               id={"modal-component-edit-#{faq.id}"}
+              question_id={faq.id}
               question={faq.question}
               answer={faq.answer}
               action="edit"
