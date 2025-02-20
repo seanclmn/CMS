@@ -5,21 +5,11 @@ defmodule CmsLiveviewWeb.QA do
 
   def mount(_params, _session, socket) do
     faqs = Cms.list_faqs()
-    {:ok, assign(socket, faqs: faqs, action: "save")}
+    {:ok, assign(socket, faqs: faqs)}
   end
 
   def handle_event("delete", %{"id" => id}, socket) do
     Cms.delete_faq(id)
-    {:noreply, assign(socket, faqs: Cms.list_faqs())}
-  end
-
-  def handle_event("edit", %{"id" => id}, socket) do
-    Cms.update_faq(id)
-    {:noreply, assign(socket, faqs: Cms.list_faqs())}
-  end
-
-  def handle_event("save", %{"question" => question, "answer" => answer}, socket) do
-    Cms.create_faq(%{question: question, answer: answer})
     {:noreply, assign(socket, faqs: Cms.list_faqs())}
   end
 
