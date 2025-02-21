@@ -39,11 +39,19 @@ defmodule CmsLiveviewWeb.Components.Modal do
     ~H"""
     <div>
       <.button
+        :if={@action == "save"}
         phx-click={show_modal(@id)}
         phx-target={@myself}
         class="my-2">
         {@title}
       </.button>
+      <p
+        :if={@action == "edit"}
+        phx-click={show_modal(@id)}
+        phx-target={@myself}
+        class="mx-2 text-underline cursor-pointer">
+        {@title}
+      </p>
       <.modal id={@id}>
         <.simple_form for={@form} phx-submit={@action} phx-target={@myself}>
           <.input type="text" name="question" label="New Question" field={@form[:question]} value={@question} />

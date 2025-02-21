@@ -15,14 +15,14 @@ defmodule CmsLiveviewWeb.QA do
 
   def render(assigns) do
     ~H"""
-    <div class="w-full p-4">
+    <div class="w-full p-4 flex flex-col items-center">
       <%= for faq <- assigns.faqs do %>
-        <div class="flex flex-row  justify-between items-end w-full py-2 my-2 border-solid border-b-2 border-gray-200">
-          <div class="flex flex-col my-4">
+        <div class="flex flex-row justify-between items-end w-full px-4 pb-4 my-2 border-solid border-2 border-gray-200 rounded-lg max-w-xl">
+          <div class="flex flex-col my-2">
             <p class="font-bold my-2"><span>Question:</span> {faq.question}</p>
             <p class="text-wrap"><span>Answer:</span> {faq.answer}</p>
           </div>
-          <div class="flex items-start">
+          <div class="flex items-start my-2">
             <.live_component
               module={CmsLiveviewWeb.Components.Modal}
               id={"modal-component-edit-#{faq.id}"}
@@ -32,13 +32,16 @@ defmodule CmsLiveviewWeb.QA do
               action="edit"
               title="Edit"
             />
-            <.button
-              class="bg-sky-500 text-black"
-              phx-click="delete"
-              phx-value-id={faq.id}
+            <button
+            phx-click="delete"
+            phx-value-id={faq.id}
+            class="flex flex-col justify-start"
             >
-              Delete
-            </.button>
+            <.icon
+              name="hero-x-mark-solid"
+              class="bg-sky-500 text-black cursor-pointer"
+            />
+            </button>
           </div>
         </div>
       <% end %>
