@@ -22,6 +22,7 @@ defmodule CmsLiveviewWeb.QA do
             <p class="font-bold my-2"><span>Question:</span> {faq.question}</p>
             <p class="text-wrap"><span>Answer:</span> {faq.answer}</p>
           </div>
+          <p>{faq.position}</p>
           <div class="flex items-start my-2">
             <.live_component
               module={CmsLiveviewWeb.Components.Modal}

@@ -5,9 +5,7 @@ defmodule CmsLiveview.Cms do
 
   import Ecto.Query, warn: false
   alias CmsLiveview.Repo
-
   alias CmsLiveview.Cms.Faq
-
   @doc """
   Returns the list of faqs.
 
@@ -17,8 +15,14 @@ defmodule CmsLiveview.Cms do
       [%Faq{}, ...]
 
   """
-  def list_faqs do
-    Repo.all(Faq)
+  def list_faqs() do
+    params = %{order: [%{field: :position, order: :asc}]}
+    case Flop.validate_and_run(Faq, params, for: Faq, repo: Repo) do
+      {:ok, {faqs, meta}} -> faqs
+      {:error, _reason} -> []
+
+    end
+
   end
 
   @doc """
@@ -50,8 +54,10 @@ defmodule CmsLiveview.Cms do
 
   """
   def create_faq(attrs \\ %{}) do
+    new_position = Repo.aggregate(Faq, :count) + 1
+
     %Faq{}
-    |> Faq.changeset(attrs)
+    |> Faq.changeset(Map.put(attrs, "position", new_position))
     |> Repo.insert()
   end
 
