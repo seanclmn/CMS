@@ -13,16 +13,33 @@ defmodule CmsLiveviewWeb.QA do
     {:noreply, assign(socket, faqs: Cms.list_faqs())}
   end
 
+  def handle_event("update-sorting", %{"ids" => ids}, socket) do
+    ids
+    |> Enum.with_index(1)
+    |> Enum.each(fn {"id-" <> id, new_position}->
+      id
+      |> Cms.get_faq!()
+      |> Cms.update_faq(%{position: new_position})
+    end)
+
+    {:noreply, socket}
+  end
+
+
   def render(assigns) do
     ~H"""
-    <div class="w-full p-4 flex flex-col items-center">
+    <div class="w-full p-4 flex flex-col items-center" phx-hook="Sortable" id="faq-list-items">
       <%= for faq <- assigns.faqs do %>
-        <div class="flex flex-row justify-between items-end w-full px-4 pb-4 my-2 border-solid border-2 border-gray-200 rounded-lg max-w-xl">
+        <div
+          id={"id-#{faq.id}"}
+          class="flex flex-row justify-between items-end w-full px-4
+            pb-4 my-2 border-solid border-2 border-gray-200 rounded-lg
+            max-w-xl cursor-pointer"
+          >
           <div class="flex flex-col my-2">
             <p class="font-bold my-2"><span>Question:</span> {faq.question}</p>
             <p class="text-wrap"><span>Answer:</span> {faq.answer}</p>
           </div>
-          <p>{faq.position}</p>
           <div class="flex items-start my-2">
             <.live_component
               module={CmsLiveviewWeb.Components.Modal}
